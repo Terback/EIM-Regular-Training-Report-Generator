@@ -195,9 +195,13 @@ export default function App() {
 
     setIsGenerating(true);
     try {
+      // Create a temporary clone for measuring or use explicit window dimensions in html2canvas
+      const originalScrollPos = window.scrollY;
+      window.scrollTo(0, 0); // Reset scroll to avoid offset issues
+
       // Wait for fonts and a small buffer for layout stabilization
       await document.fonts.ready;
-      await new Promise(resolve => setTimeout(resolve, 800)); // Increased buffer
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -211,30 +215,50 @@ export default function App() {
         const page = pages[i] as HTMLElement;
         
         const canvas = await html2canvas(page, {
-          scale: 3, // Increased scale for superior text sharpness
+          scale: 3, 
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          width: page.offsetWidth,
-          height: page.offsetHeight,
+          // CRITICAL: Force the rendering engine to act like it's on a wide screen
+          windowWidth: 1200, 
+          windowHeight: 1600,
+          width: 816, // Letter width at 96dpi
+          height: 1056, // Letter height at 96dpi
           onclone: (clonedDoc) => {
-            // Guarantee visibility and style stability in the capture doc
-            const allPages = clonedDoc.querySelectorAll('.report-page');
-            allPages.forEach(p => (p as HTMLElement).style.opacity = '1');
+            const clonedPage = clonedDoc.querySelectorAll('.report-page')[i] as HTMLElement;
+            if (clonedPage) {
+              // Force absolute styles in the capture doc to prevent mobile wrapping
+              clonedPage.style.display = 'flex';
+              clonedPage.style.flexDirection = 'column';
+              clonedPage.style.width = '215.9mm';
+              clonedPage.style.height = '279.4mm';
+              clonedPage.style.padding = '16mm';
+              clonedPage.style.boxSizing = 'border-box';
+              clonedPage.style.transform = 'none';
+              clonedPage.style.position = 'relative';
+              clonedPage.style.left = '0';
+              clonedPage.style.top = '0';
+              
+              // Prevent common mobile webkit layout bugs
+              const images = clonedPage.querySelectorAll('img');
+              images.forEach(img => {
+                img.style.maxWidth = 'none';
+              });
+            }
           }
         });
         
-        const imgData = canvas.toDataURL('image/jpeg', 1.0); // Maximum quality
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
         
         if (i > 0) pdf.addPage();
-        // Letter size standard: 215.9mm x 279.4mm
         pdf.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
       }
 
       pdf.save(`EIM_Report_${studentName.replace(/\s+/g, '_') || 'Student'}.pdf`);
+      window.scrollTo(0, originalScrollPos); // Restore scroll
     } catch (error) {
       console.error('PDF Generation Error:', error);
-      alert('Failed to generate PDF. Please check your internet connection and try again.');
+      alert('Failed to generate PDF. Please check your data or try using a desktop browser if this persists.');
     } finally {
       setIsGenerating(false);
     }
