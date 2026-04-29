@@ -294,7 +294,8 @@ export default function App() {
         pdf.addImage(imgData, 'PNG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
       }
 
-      pdf.save(`EIM_Report_${studentName.replace(/\s+/g, '_') || 'Student'}.pdf`);
+      const fileName = `EIM Training Report ${studentName || 'Student'}${classNumber ? ' ' + classNumber : ''}.pdf`;
+      pdf.save(fileName);
       window.scrollTo(0, originalScrollPos); // Restore scroll
     } catch (error) {
       console.error('PDF Generation Error:', error);
@@ -324,7 +325,8 @@ export default function App() {
 
       const dataUrl = canvas.toDataURL('image/png', 1.0);
       const link = document.createElement('a');
-      link.download = `EIM_Report_${studentName || 'Student'}.png`;
+      const fileName = `EIM Training Report ${studentName || 'Student'}${classNumber ? ' ' + classNumber : ''}.png`;
+      link.download = fileName;
       link.href = dataUrl;
       link.click();
     } catch (error) {
