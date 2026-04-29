@@ -824,14 +824,11 @@ export default function App() {
       {/* Hidden Template for PDF Generation (Always rendered but off-screen) */}
       <div style={{ 
         position: 'fixed', 
-        left: '0', 
+        left: '-9999px', 
         top: '0', 
-        width: '215.9mm', 
-        zIndex: -100, 
-        opacity: 0, 
+        width: '215.9mm',
+        visibility: 'hidden',  // 不用 opacity+height 技巧
         pointerEvents: 'none',
-        overflow: 'hidden',
-        height: '1px' // Keep it in the DOM but non-disruptive
       }}>
         <ReportTemplate 
           reportRef={hiddenReportRef}
