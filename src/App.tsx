@@ -1033,12 +1033,12 @@ function ReportTemplate({
       <div className="p-16 flex flex-col overflow-hidden report-page" style={{ height: '279.4mm', backgroundColor: 'white' }}>
         <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-8">Project Gallery</h3>
         <div className="flex-grow">
-          <div className="flex flex-wrap -m-2">
+          <div className="flex flex-wrap -mx-2 -my-4">
             {images.map((img: string | null, i: number) => img && (
-              <div key={i} className="w-1/3 p-2">
+              <div key={i} className="w-1/3 px-2 py-4">
                 <div className="flex flex-col">
                   <div 
-                    className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 bg-center bg-cover bg-no-repeat mb-1"
+                    className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 bg-center bg-cover bg-no-repeat mb-2"
                     style={{ backgroundImage: `url(${img})` }}
                   />
                   {imageCaptions[i] && (
