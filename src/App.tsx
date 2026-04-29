@@ -26,7 +26,8 @@ import {
   Download,
   Plus,
   X,
-  GraduationCap
+  GraduationCap,
+  Camera
 } from 'lucide-react';
 // @ts-ignore
 import html2canvas from 'html2canvas';
@@ -616,17 +617,33 @@ export default function App() {
                         </button>
                       </>
                     ) : (
-                      <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer touch-manipulation">
-                        <Plus className="w-8 h-8 text-slate-300 mb-2 group-hover:text-blue-400 group-hover:scale-110 transition-transform" />
-                        <span className="text-xs font-medium text-slate-400 group-hover:text-blue-500">Record Progress</span>
-                        <input 
-                          type="file" 
-                          accept="image/*"
-                          capture="environment" 
-                          onChange={(e) => handleImageUpload(i, e)}
-                          className="hidden"
-                        />
-                      </label>
+                      <div className="absolute inset-0 flex flex-col touch-manipulation">
+                        <label className="flex-1 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition-colors border-b-2 border-dashed border-slate-200 group relative">
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <Camera className="w-6 h-6 text-slate-300 mb-1 group-hover:text-blue-400 transition-colors" />
+                            <span className="text-[10px] font-medium text-slate-400 group-hover:text-blue-500">Camera</span>
+                          </div>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            capture="environment"
+                            onChange={(e) => handleImageUpload(i, e)}
+                            className="hidden"
+                          />
+                        </label>
+                        <label className="flex-1 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-100 transition-colors group relative">
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <ImageIcon className="w-6 h-6 text-slate-300 mb-1 group-hover:text-blue-400 transition-colors" />
+                            <span className="text-[10px] font-medium text-slate-400 group-hover:text-blue-500">Gallery</span>
+                          </div>
+                          <input 
+                            type="file" 
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(i, e)}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
                     )}
                   </div>
                   <input 
