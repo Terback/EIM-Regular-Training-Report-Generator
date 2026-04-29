@@ -824,11 +824,14 @@ export default function App() {
       {/* Hidden Template for PDF Generation (Always rendered but off-screen) */}
       <div style={{ 
         position: 'fixed', 
-        left: '-9999px', 
+        left: '0', 
         top: '0', 
-        width: '215.9mm',
-        visibility: 'hidden',  // 不用 opacity+height 技巧
+        width: '215.9mm', 
+        zIndex: -100, 
+        opacity: 0, 
         pointerEvents: 'none',
+        overflow: 'hidden',
+        height: '1px' // Keep it in the DOM but non-disruptive
       }}>
         <ReportTemplate 
           reportRef={hiddenReportRef}
@@ -1028,22 +1031,24 @@ function ReportTemplate({
       <div className="p-16 flex flex-col overflow-hidden report-page" style={{ height: '279.4mm', backgroundColor: 'white' }}>
         <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-8">Project Gallery</h3>
         <div className="flex-grow">
-          <div className="flex flex-wrap -mx-2 -my-4">
+          <div className="flex flex-wrap -mx-2 -my-12">
             {images.map((img: string | null, i: number) => img && (
-              <div key={i} className="w-1/3 px-2 py-4">
-                <div className="flex flex-col h-full">
-                  <div className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 mb-2">
+              <div key={i} className="w-1/3 px-2 py-12">
+                <div className="flex flex-col min-h-0 overflow-visible">
+                  <div className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 mb-4 flex items-center justify-center shrink-0">
                     <img 
                       src={img} 
                       alt="" 
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-full object-contain"
                       crossOrigin="anonymous"
                     />
                   </div>
                   {imageCaptions[i] && (
-                    <p className="text-center text-slate-600 font-bold italic text-[9px] leading-tight px-1 line-clamp-3">
-                      {imageCaptions[i]}
-                    </p>
+                    <div className="w-full mt-2 overflow-visible">
+                      <p className="text-center text-slate-600 font-bold italic text-[10px] leading-[1.3] px-1 break-words">
+                        {imageCaptions[i]}
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
