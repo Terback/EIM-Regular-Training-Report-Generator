@@ -168,8 +168,15 @@ export default function App() {
   };
 
   const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      // If multiple files are selected, handle them as a batch
+      if (files.length > 1) {
+        handleBatchUpload(e);
+        return;
+      }
+      
+      const file = files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
         const newImages = [...images];
@@ -178,6 +185,40 @@ export default function App() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleBatchUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Find empty indices
+    const emptyIndices = images
+      .map((img, i) => img === null ? i : -1)
+      .filter(i => i !== -1);
+
+    // If no empty slots, we can't add more (or could append if we supported more than 6)
+    if (emptyIndices.length === 0) {
+      alert("No empty slots available in the gallery. Please remove some images first.");
+      return;
+    }
+
+    const filesToProcess = files.slice(0, emptyIndices.length);
+    const newImages = [...images];
+    
+    let processedCount = 0;
+    filesToProcess.forEach((file, i) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const targetIndex = emptyIndices[i];
+        newImages[targetIndex] = reader.result as string;
+        processedCount++;
+        
+        if (processedCount === filesToProcess.length) {
+          setImages([...newImages]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const removeImage = (index: number) => {
@@ -589,9 +630,22 @@ export default function App() {
 
           {/* Section 4: Project Gallery (Now 6 items) */}
           <section className="card">
-            <div className="flex items-center gap-3 mb-2">
-              <ImageIcon className="w-5 h-5 text-blue-600" />
-              <h2 className="text-xl font-semibold">Project Gallery</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div className="flex items-center gap-3">
+                <ImageIcon className="w-5 h-5 text-blue-600" />
+                <h2 className="text-xl font-semibold">Project Gallery</h2>
+              </div>
+              <label className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl cursor-pointer transition-colors text-sm font-bold border border-slate-200">
+                <Plus className="w-4 h-4" />
+                Batch Upload (Select Multiple)
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*"
+                  onChange={handleBatchUpload}
+                  className="hidden"
+                />
+              </label>
             </div>
             <p className="text-sm text-slate-500 mb-6 font-sans">Upload up to 6 project photos. Best for vertical (phone) photos.</p>
             
@@ -636,6 +690,7 @@ export default function App() {
                           </div>
                           <input 
                             type="file" 
+                            multiple
                             accept="image/*"
                             onChange={(e) => handleImageUpload(i, e)}
                             className="hidden"
