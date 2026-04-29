@@ -216,19 +216,17 @@ export default function App() {
         const page = pages[i] as HTMLElement;
         
         const canvas = await html2canvas(page, {
-          scale: 3, 
+          scale: 4, // Increased scale for even better clarity
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
-          // CRITICAL: Force the rendering engine to act like it's on a wide screen
           windowWidth: 1200, 
           windowHeight: 1600,
-          width: 816, // Letter width at 96dpi
-          height: 1056, // Letter height at 96dpi
+          width: 816, 
+          height: 1056, 
           onclone: (clonedDoc) => {
             const clonedPage = clonedDoc.querySelectorAll('.report-page')[i] as HTMLElement;
             if (clonedPage) {
-              // Force absolute styles in the capture doc to prevent mobile wrapping
               clonedPage.style.display = 'flex';
               clonedPage.style.flexDirection = 'column';
               clonedPage.style.width = '215.9mm';
@@ -240,7 +238,6 @@ export default function App() {
               clonedPage.style.left = '0';
               clonedPage.style.top = '0';
               
-              // Prevent common mobile webkit layout bugs
               const images = clonedPage.querySelectorAll('img');
               images.forEach(img => {
                 img.style.maxWidth = 'none';
@@ -249,10 +246,11 @@ export default function App() {
           }
         });
         
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        // Use PNG for the internal capture to eliminate compression artifacts
+        const imgData = canvas.toDataURL('image/png');
         
         if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
+        pdf.addImage(imgData, 'PNG', 0, 0, 215.9, 279.4, undefined, 'SLOW');
       }
 
       pdf.save(`EIM_Report_${studentName.replace(/\s+/g, '_') || 'Student'}.pdf`);
@@ -1036,11 +1034,15 @@ function ReportTemplate({
           <div className="flex flex-wrap -mx-2 -my-4">
             {images.map((img: string | null, i: number) => img && (
               <div key={i} className="w-1/3 px-2 py-4">
-                <div className="flex flex-col">
-                  <div 
-                    className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 bg-center bg-cover bg-no-repeat mb-2"
-                    style={{ backgroundImage: `url(${img})` }}
-                  />
+                <div className="flex flex-col h-full">
+                  <div className="w-full aspect-[3/4] bg-slate-50 rounded-xl overflow-hidden border border-slate-100 mb-2">
+                    <img 
+                      src={img} 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                      crossOrigin="anonymous"
+                    />
+                  </div>
                   {imageCaptions[i] && (
                     <p className="text-center text-slate-600 font-bold italic text-[9px] leading-tight px-1 line-clamp-3">
                       {imageCaptions[i]}
