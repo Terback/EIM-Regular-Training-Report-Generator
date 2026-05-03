@@ -1034,51 +1034,51 @@ function ReportTemplate({
       </div>
 
       {/* PAGE 2: Lesson Overview, Teacher Feedback & Homework */}
-      <div className="p-16 flex flex-col overflow-hidden report-page" style={{ height: '279.4mm', backgroundColor: 'white' }}>
+      <div className="p-10 pb-12 flex flex-col overflow-hidden report-page" style={{ height: '279.4mm', backgroundColor: 'white' }}>
         {lessonOverview && (
-          <div className="mb-6 flex flex-col min-h-0 flex-grow-[2] basis-0">
-            <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-3">Lesson Overview</h3>
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 overflow-hidden flex-grow">
-              <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+          <div className="mb-4 flex flex-col flex-grow-[2]">
+            <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-2">Lesson Overview</h3>
+            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex-grow">
+              <p className="text-[13px] leading-snug text-slate-700 whitespace-pre-wrap">
                 {lessonOverview}
               </p>
             </div>
           </div>
         )}
 
-        <div className="mb-6 flex flex-col min-h-0 flex-grow-[3] basis-0">
-          <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-3">Student Performance & Feedback</h3>
+        <div className="mb-4 flex flex-col flex-grow-[3]">
+          <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-2">Student Performance & Feedback</h3>
           
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-100">
               <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1 font-sans">Highlight</p>
               <p className="text-[11px] text-emerald-900 leading-snug">{highlight || 'Ongoing progress...'}</p>
             </div>
-            <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+            <div className="bg-red-50 rounded-xl p-3 border border-red-100">
               <p className="text-[9px] font-black text-red-600 uppercase tracking-widest mb-1 font-sans">Challenge</p>
               <p className="text-[11px] text-red-900 leading-snug">{challenge || 'Continuing development...'}</p>
             </div>
           </div>
 
-          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 overflow-hidden flex-grow">
-            <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap italic">
+          <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex-grow">
+            <p className="text-[13px] leading-snug text-slate-700 whitespace-pre-wrap italic">
               "{feedback || 'No specific feedback provided for this session.'}"
             </p>
           </div>
         </div>
 
         {homework && (
-          <div className="mb-6 flex flex-col min-h-0 flex-grow-[1.2] basis-0">
-            <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-3">Homework / Preview</h3>
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 overflow-hidden flex-grow">
-              <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+          <div className="mb-4 flex flex-col flex-grow-[1.2]">
+            <h3 className="text-sm font-black text-brand-blue uppercase tracking-widest mb-2">Homework / Preview</h3>
+            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100 flex-grow">
+              <p className="text-[13px] leading-snug text-slate-700 whitespace-pre-wrap">
                 {homework}
               </p>
             </div>
           </div>
         )}
 
-        <div className="mt-auto pt-8 border-t border-slate-100 flex justify-between items-center text-slate-400 text-[9px] uppercase tracking-widest font-bold">
+        <div className="mt-auto pt-6 border-t border-slate-100 flex justify-between items-center text-slate-400 text-[9px] uppercase tracking-widest font-bold">
           <p>© EIM TECHNOLOGY TRAINING</p>
           <p>Page 2 of 3</p>
         </div>
