@@ -1,5 +1,6 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="(https://github.com/Terback/Images/blob/main/logo/logo%20color%20palette-website-01.png?raw=true)" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/Terback/Images/blob/main/logo/logo%20color%20palette-website-01.png?raw=true" />
+   
 </div>
 
 # EIM Regular Training Report Generator
