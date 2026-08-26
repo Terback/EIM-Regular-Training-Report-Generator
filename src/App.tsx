@@ -82,6 +82,15 @@ const MENTORSHIP_STAGES: Record<string, string[]> = {
     "Explore digital creation through programming, AI-assisted Vibe Coding, 3D modelling, and 3D printing, while learning how software and digital designs can interact with the physical world.",
     'Develop an introductory engineering mindset by learning to build, test, troubleshoot, modify, and iterate rather than simply following step-by-step instructions.',
     "Discover the student's personal interests, strengths, and preferred areas of engineering through a variety of small projects and experiences, establishing a direction for the next stage of learning."
+  ],
+  'Stage 2: Engineering Foundation & Skill Development': [
+    "Develop a stronger foundation in electronics, programming, microcontrollers, mechanical design, and other engineering areas aligned with the student's interests.",
+    'Move beyond following tutorials by understanding why and how engineering systems work, including the relationships between hardware, firmware, software, sensors, actuators, and data.',
+    'Build proficiency with essential engineering tools and workflows, such as circuit prototyping, soldering, debugging, measurement instruments, programming environments, 3D modelling, and version control.',
+    'Strengthen systematic testing, troubleshooting, and problem-solving skills by learning to identify problems, form hypotheses, test solutions, analyze results, and iterate.',
+    'Complete increasingly challenging mini-projects that require the student to integrate multiple technical skills and make more independent engineering decisions.',
+    'Develop greater technical independence by learning to research unfamiliar technologies, read technical documentation, evaluate possible solutions, and seek help effectively when needed.',
+    'Identify one or more areas of deeper technical interest and begin preparing for a larger independent or customized engineering project in the next stage.'
   ]
 };
 
