@@ -73,6 +73,30 @@ const PROJECTS = {
   'Custom Project': []
 };
 
+// Mentorship Program stages: keyed by "Project Name" shown on the report, each with
+// its own preset objectives. Add future stages (e.g. "Stage 2: ...") as new entries here.
+const MENTORSHIP_STAGES: Record<string, string[]> = {
+  'Stage 1: Engineering Exploration': [
+    'Develop curiosity, confidence, and genuine interest in engineering through hands-on exploration, experimentation, and project-based learning.',
+    'Gain broad exposure to different engineering areas and tools, including basic electronics, circuit building, microcontrollers, sensors, soldering, and hardware assembly.',
+    "Explore digital creation through programming, AI-assisted Vibe Coding, 3D modelling, and 3D printing, while learning how software and digital designs can interact with the physical world.",
+    'Develop an introductory engineering mindset by learning to build, test, troubleshoot, modify, and iterate rather than simply following step-by-step instructions.',
+    "Discover the student's personal interests, strengths, and preferred areas of engineering through a variety of small projects and experiences, establishing a direction for the next stage of learning."
+  ]
+};
+
+// Default objectives for Customized Engineering Project. The Project Name itself is
+// always user-entered; these objectives pre-fill the (editable) objectives field.
+const CUSTOM_ENGINEERING_PROJECT_DEFAULT_OBJECTIVES = [
+  'Develop a practical understanding of the engineering principles and technologies involved in the project.',
+  'Understand the fundamentals of how microcontrollers, sensors, actuators, and other relevant electronic components work and interact within a system.',
+  'Design, build, test, troubleshoot, and iteratively improve a functional prototype toward a clear proof of concept.',
+  "Gain experience integrating the project's hardware, firmware, and software components where applicable, and understand how data and control flow through the complete system.",
+  'Become familiar with the basic development and deployment workflow required to operate, test, and demonstrate the project reliably.',
+  'Maintain an ongoing engineering project log documenting progress, experiments, technical decisions, problems encountered, troubleshooting, modifications, and results.',
+  'Develop the ability to clearly communicate the project through a technical presentation, demonstration, project documentation, or technical report.'
+];
+
 const SKILLS = [
   'Circuit Building',
   'Breadboard Prototyping',
@@ -101,6 +125,8 @@ const CONCEPTS = [
 
 const TRAINING_NAMES = [
   'Fundamental Circuit and Microcontroller',
+  'Mentorship Program',
+  'Customized Engineering Project',
   'Custom Training Name'
 ];
 
@@ -978,6 +1004,11 @@ export default function App() {
   const [selectedProject, setSelectedProject] = useState('Arduino Basic Circuit');
   const [customProjectName, setCustomProjectName] = useState('');
   const [customObjectives, setCustomObjectives] = useState('');
+  const [selectedMentorshipStage, setSelectedMentorshipStage] = useState(Object.keys(MENTORSHIP_STAGES)[0]);
+  const [customEngineeringProjectName, setCustomEngineeringProjectName] = useState('');
+  const [customEngineeringObjectives, setCustomEngineeringObjectives] = useState(
+    CUSTOM_ENGINEERING_PROJECT_DEFAULT_OBJECTIVES.join('\n')
+  );
   
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [selectedConcepts, setSelectedConcepts] = useState<string[]>([]);
@@ -996,11 +1027,27 @@ export default function App() {
   const hiddenReportRef = useRef<HTMLDivElement>(null);
 
   const objectives = useMemo(() => {
+    if (selectedTrainingName === 'Mentorship Program') {
+      return MENTORSHIP_STAGES[selectedMentorshipStage] || [];
+    }
+    if (selectedTrainingName === 'Customized Engineering Project') {
+      return customEngineeringObjectives.split('\n').filter(o => o.trim() !== '');
+    }
     if (selectedProject === 'Custom Project') {
       return customObjectives.split('\n').filter(o => o.trim() !== '');
     }
     return PROJECTS[selectedProject as keyof typeof PROJECTS] || [];
-  }, [selectedProject, customObjectives]);
+  }, [selectedTrainingName, selectedMentorshipStage, selectedProject, customObjectives, customEngineeringObjectives]);
+
+  const projectName = useMemo(() => {
+    if (selectedTrainingName === 'Mentorship Program') {
+      return selectedMentorshipStage;
+    }
+    if (selectedTrainingName === 'Customized Engineering Project') {
+      return customEngineeringProjectName;
+    }
+    return selectedProject === 'Custom Project' ? customProjectName : selectedProject;
+  }, [selectedTrainingName, selectedMentorshipStage, selectedProject, customProjectName, customEngineeringProjectName]);
 
   const reportId = useMemo(() => createReportId(), []);
 
@@ -1012,7 +1059,7 @@ export default function App() {
     trainingDate,
     classNumber,
     trainingName: selectedTrainingName === 'Custom Training Name' ? customTrainingName : selectedTrainingName,
-    projectName: selectedProject === 'Custom Project' ? customProjectName : selectedProject,
+    projectName,
     objectives,
     selectedConcepts,
     selectedSkills,
@@ -1035,6 +1082,7 @@ export default function App() {
     customTrainingName,
     selectedProject,
     customProjectName,
+    projectName,
     objectives,
     selectedConcepts,
     selectedSkills,
@@ -1303,25 +1351,67 @@ export default function App() {
                 </div>
               )}
 
-              <div>
-                <label className="label">Training Project</label>
-                <select 
-                  value={selectedProject}
-                  onChange={(e) => setSelectedProject(e.target.value)}
-                  className="input-field bg-white"
-                >
-                  {Object.keys(PROJECTS).map(project => (
-                    <option key={project} value={project}>{project}</option>
-                  ))}
-                </select>
-              </div>
+              {selectedTrainingName === 'Mentorship Program' && (
+                <div className="animate-slide-down">
+                  <label className="label">Stage</label>
+                  <select
+                    value={selectedMentorshipStage}
+                    onChange={(e) => setSelectedMentorshipStage(e.target.value)}
+                    className="input-field bg-white"
+                  >
+                    {Object.keys(MENTORSHIP_STAGES).map(stage => (
+                      <option key={stage} value={stage}>{stage}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
-              {selectedProject === 'Custom Project' && (
+              {selectedTrainingName === 'Customized Engineering Project' && (
+                <div className="space-y-4 animate-slide-down">
+                  <div>
+                    <label className="label">Project Name</label>
+                    <input
+                      type="text"
+                      value={customEngineeringProjectName}
+                      onChange={(e) => setCustomEngineeringProjectName(e.target.value)}
+                      placeholder="Enter project name"
+                      className="input-field"
+                    />
+                  </div>
+                  <div>
+                    <label className="label">Project Objectives (One per line)</label>
+                    <textarea
+                      value={customEngineeringObjectives}
+                      onChange={(e) => setCustomEngineeringObjectives(e.target.value)}
+                      placeholder="Enter objectives..."
+                      rows={7}
+                      className="input-field resize-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {selectedTrainingName !== 'Mentorship Program' && selectedTrainingName !== 'Customized Engineering Project' && (
+                <div>
+                  <label className="label">Training Project</label>
+                  <select
+                    value={selectedProject}
+                    onChange={(e) => setSelectedProject(e.target.value)}
+                    className="input-field bg-white"
+                  >
+                    {Object.keys(PROJECTS).map(project => (
+                      <option key={project} value={project}>{project}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedTrainingName !== 'Mentorship Program' && selectedTrainingName !== 'Customized Engineering Project' && selectedProject === 'Custom Project' && (
                 <div className="space-y-4 animate-slide-down">
                   <div>
                     <label className="label">Custom Project Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={customProjectName}
                       onChange={(e) => setCustomProjectName(e.target.value)}
                       placeholder="Enter project name"
@@ -1330,7 +1420,7 @@ export default function App() {
                   </div>
                   <div>
                     <label className="label">Project Objectives (One per line)</label>
-                    <textarea 
+                    <textarea
                       value={customObjectives}
                       onChange={(e) => setCustomObjectives(e.target.value)}
                       placeholder="Enter objectives..."
@@ -1721,8 +1811,7 @@ export default function App() {
           trainingDate={trainingDate}
           classNumber={classNumber}
           trainingName={selectedTrainingName === 'Custom Training Name' ? customTrainingName : selectedTrainingName}
-          selectedProject={selectedProject}
-          customProjectName={customProjectName}
+          projectName={projectName}
           objectives={objectives}
           selectedConcepts={selectedConcepts}
           selectedSkills={selectedSkills}
@@ -1751,7 +1840,7 @@ export default function App() {
 // Reusable Report Template Component
 function ReportTemplate({ 
   reportRef, studentName, studentEmail, teacherName, teacherEmail, 
-  trainingDate, classNumber, trainingName, selectedProject, customProjectName, 
+  trainingDate, classNumber, trainingName, projectName,
   objectives, selectedConcepts, selectedSkills, lessonOverview, feedback, highlight, challenge, homework, images, imageCaptions 
 }: any) {
   const COMPANY_NAME = 'EIM TECHNOLOGY';
@@ -1800,7 +1889,7 @@ function ReportTemplate({
             <div className="space-y-4">
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Project Name</p>
-                <p className="font-semibold text-lg">{selectedProject === 'Custom Project' ? customProjectName : selectedProject}</p>
+                <p className="font-semibold text-lg">{projectName}</p>
               </div>
               <div>
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Objectives</p>
